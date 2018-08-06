@@ -6,7 +6,7 @@
 SX is a Golang library that introduces nested `database/sql` transaction
 support.
 
-## [Issues 7898](https://github.com/golang/go/issues/7898)
+## [Issue 7898](https://github.com/golang/go/issues/7898)
 
 Working with nested transactions in Golang's `database/sql` package is
 problematic, because you have to distinquish between non-transaction and
@@ -48,3 +48,26 @@ type Transactor interface {
 Currently, the nested transactions don't do save-states and a revert in a
 nested transaction will rever the outer one, but this is easily solveable,
 should you need to.
+
+## Usage
+
+```go
+db, err := sql.Open(...)
+if err != nil {
+	// Handle error.
+}
+
+// Wrap the connection in `sx.Transactor`. `sx.NewTransactor` can work with
+// both `*sql.DB`  and `*sql.Tx`.
+tx := sx.NewTransactor(db)
+
+err := sx.Transaction(tx, func(tx sx.Transactor) error {
+	// Return `error` here to reverse the transaction. Any nested
+	// `sx.Transaction` calls will reuse the same transaction.
+
+
+	// Return `nil` on the outermost transaction to commit it. Returning
+	// `nil` in nested transactions wont do a thing.
+	return nil
+})
+```
