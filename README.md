@@ -17,7 +17,7 @@ but it's been 4 years and we still don't have the new API that supports nested
 transactions.
 
 SX tries to solve this issue by offering a new API that wraps both
-non-transaction and transaction connections under one umbreala and offering a
+non-transaction and transaction connections under one umbrella and offering a
 single function, `sx.Transaction` to ensure a transaction, no matter if it was
 open before.
 
